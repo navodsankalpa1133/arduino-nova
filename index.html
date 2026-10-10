@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en" class="dark"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova's Arduino Lab ⚡🤖</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#e6fffa',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            950: '#022c22',
+                        },
+                        neon: {
+                            cyan: '#00f2fe',
+                            green: '#4facfe',
+                            lime: '#22c55e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&amp;family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <!-- JSZip CDN for website bundling -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .glow-box {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .glow-box:hover {
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.3);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+        .glow-text {
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+        .cyan-glow {
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        .code-block {
+            background: #090d16;
+            border: 1px solid #1e293b;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:Fira Code, monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.-bottom-10{bottom:-2.5rem}.-left-10{left:-2.5rem}.-right-10{right:-2.5rem}.-top-10{top:-2.5rem}.bottom-6{bottom:1.5rem}.left-3\.5{left:0.875rem}.right-6{right:1.5rem}.top-0{top:0px}.top-3\.5{top:0.875rem}.z-10{z-index:10}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mr-2{margin-right:0.5rem}.mr-3{margin-right:0.75rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-auto{margin-top:auto}.mr-1\.5{margin-right:0.375rem}.block{display:block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-11{height:2.75rem}.h-12{height:3rem}.h-2{height:0.5rem}.h-20{height:5rem}.h-3{height:0.75rem}.h-9{height:2.25rem}.h-96{height:24rem}.max-h-80{max-height:20rem}.max-h-\[90vh\]{max-height:90vh}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-11{width:2.75rem}.w-12{width:3rem}.w-2{width:0.5rem}.w-20{width:5rem}.w-3{width:0.75rem}.w-9{width:2.25rem}.w-96{width:24rem}.w-full{width:100%}.max-w-2xl{max-width:42rem}.max-w-3xl{max-width:48rem}.max-w-4xl{max-width:56rem}.max-w-7xl{max-width:80rem}.max-w-lg{max-width:32rem}.flex-grow{flex-grow:1}.translate-y-20{--tw-translate-y:5rem;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes bounce{0%, 100%{transform:translateY(-25%);animation-timing-function:cubic-bezier(0.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,0.2,1)}}.animate-bounce{animation:bounce 1s infinite}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-end{justify-content:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}.space-x-1 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.25rem * var(--tw-space-x-reverse));margin-left:calc(0.25rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-1\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.375rem * var(--tw-space-x-reverse));margin-left:calc(0.375rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-3 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.75rem * var(--tw-space-x-reverse));margin-left:calc(0.75rem * calc(1 - var(--tw-space-x-reverse)))}.space-x-4 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(1rem * var(--tw-space-x-reverse));margin-left:calc(1rem * calc(1 - var(--tw-space-x-reverse)))}.space-y-16 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(4rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(4rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.space-y-8 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(2rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(2rem * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-cyan-500\/20{border-color:rgb(6 182 212 / 0.2)}.border-cyan-500\/30{border-color:rgb(6 182 212 / 0.3)}.border-emerald-500\/20{border-color:rgb(16 185 129 / 0.2)}.border-emerald-500\/30{border-color:rgb(16 185 129 / 0.3)}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.border-slate-800\/80{border-color:rgb(30 41 59 / 0.8)}.bg-\[\#0b0f19\]{--tw-bg-opacity:1;background-color:rgb(11 15 25 / var(--tw-bg-opacity, 1))}.bg-\[\#0b0f19\]\/80{background-color:rgb(11 15 25 / 0.8)}.bg-black\/80{background-color:rgb(0 0 0 / 0.8)}.bg-cyan-500\/10{background-color:rgb(6 182 212 / 0.1)}.bg-cyan-500\/5{background-color:rgb(6 182 212 / 0.05)}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153 / var(--tw-bg-opacity, 1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-emerald-500\/10{background-color:rgb(16 185 129 / 0.1)}.bg-emerald-500\/5{background-color:rgb(16 185 129 / 0.05)}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/80{background-color:rgb(15 23 42 / 0.8)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-slate-950\/40{background-color:rgb(2 6 23 / 0.4)}.bg-slate-950\/60{background-color:rgb(2 6 23 / 0.6)}.bg-gradient-to-br{background-image:linear-gradient(to bottom right, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.bg-gradient-to-tr{background-image:linear-gradient(to top right, var(--tw-gradient-stops))}.from-cyan-500{--tw-gradient-from:#06b6d4 var(--tw-gradient-from-position);--tw-gradient-to:rgb(6 182 212 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-emerald-400{--tw-gradient-from:#34d399 var(--tw-gradient-from-position);--tw-gradient-to:rgb(52 211 153 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-emerald-500{--tw-gradient-from:#10b981 var(--tw-gradient-from-position);--tw-gradient-to:rgb(16 185 129 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-slate-900{--tw-gradient-from:#0f172a var(--tw-gradient-from-position);--tw-gradient-to:rgb(15 23 42 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-slate-900\/90{--tw-gradient-to:rgb(15 23 42 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), rgb(15 23 42 / 0.9) var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-teal-300{--tw-gradient-to:rgb(94 234 212 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #5eead4 var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-cyan-400{--tw-gradient-to:#22d3ee var(--tw-gradient-to-position)}.to-cyan-500{--tw-gradient-to:#06b6d4 var(--tw-gradient-to-position)}.to-emerald-500{--tw-gradient-to:#10b981 var(--tw-gradient-to-position)}.to-emerald-950\/40{--tw-gradient-to:rgb(2 44 34 / 0.4) var(--tw-gradient-to-position)}.to-slate-950{--tw-gradient-to:#020617 var(--tw-gradient-to-position)}.to-teal-600{--tw-gradient-to:#0d9488 var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.p-2\.5{padding:0.625rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-7{padding-left:1.75rem;padding-right:1.75rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-4{padding-bottom:1rem}.pb-6{padding-bottom:1.5rem}.pl-10{padding-left:2.5rem}.pr-4{padding-right:1rem}.pt-2{padding-top:0.5rem}.pt-4{padding-top:1rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:Fira Code, monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.text-\[10px\]{font-size:10px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-medium{font-weight:500}.font-normal{font-weight:400}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wide{letter-spacing:0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.text-cyan-400{--tw-text-opacity:1;color:rgb(34 211 238 / var(--tw-text-opacity, 1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-emerald-400\/80{color:rgb(52 211 153 / 0.8)}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-950{--tw-text-opacity:1;color:rgb(2 6 23 / var(--tw-text-opacity, 1))}.text-transparent{color:transparent}.opacity-0{opacity:0}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-cyan-500\/20{--tw-shadow-color:rgb(6 182 212 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.shadow-cyan-500\/25{--tw-shadow-color:rgb(6 182 212 / 0.25);--tw-shadow:var(--tw-shadow-colored)}.shadow-emerald-500\/20{--tw-shadow-color:rgb(16 185 129 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.shadow-emerald-500\/25{--tw-shadow-color:rgb(16 185 129 / 0.25);--tw-shadow:var(--tw-shadow-colored)}.blur-3xl{--tw-blur:blur(64px);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-xl{--tw-backdrop-blur:blur(24px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.duration-300{transition-duration:300ms}.selection\:bg-emerald-500 *::selection{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.selection\:text-black *::selection{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.selection\:bg-emerald-500::selection{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.selection\:text-black::selection{--tw-text-opacity:1;color:rgb(0 0 0 / var(--tw-text-opacity, 1))}.hover\:-translate-y-0\.5:hover{--tw-translate-y:-0.125rem;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:-scale-105:hover{--tw-scale-x:-1.05;--tw-scale-y:-1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:border-emerald-500\/50:hover{border-color:rgb(16 185 129 / 0.5)}.hover\:border-emerald-500\/40:hover{border-color:rgb(16 185 129 / 0.4)}.hover\:bg-cyan-500\/20:hover{background-color:rgb(6 182 212 / 0.2)}.hover\:bg-emerald-500\/20:hover{background-color:rgb(16 185 129 / 0.2)}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-800:hover{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-800\/60:hover{background-color:rgb(30 41 59 / 0.6)}.hover\:from-cyan-400:hover{--tw-gradient-from:#22d3ee var(--tw-gradient-from-position);--tw-gradient-to:rgb(34 211 238 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.hover\:from-emerald-400:hover{--tw-gradient-from:#34d399 var(--tw-gradient-from-position);--tw-gradient-to:rgb(52 211 153 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.hover\:to-emerald-400:hover{--tw-gradient-to:#34d399 var(--tw-gradient-to-position)}.hover\:to-teal-500:hover{--tw-gradient-to:#14b8a6 var(--tw-gradient-to-position)}.hover\:text-emerald-300:hover{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.focus\:border-cyan-500:focus{--tw-border-opacity:1;border-color:rgb(6 182 212 / var(--tw-border-opacity, 1))}.focus\:border-emerald-500:focus{--tw-border-opacity:1;border-color:rgb(16 185 129 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}@media (min-width: 640px){.sm\:w-auto{width:auto}.sm\:p-10{padding:2.5rem}.sm\:p-12{padding:3rem}.sm\:p-8{padding:2rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-4xl{font-size:2.25rem;line-height:2.5rem}.sm\:text-6xl{font-size:3.75rem;line-height:1}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}}@media (min-width: 768px){.md\:flex{display:flex}.md\:hidden{display:none}.md\:w-72{width:18rem}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:flex-row{flex-direction:row}.md\:items-center{align-items:center}}@media (min-width: 1024px){.lg\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.lg\:space-x-2 > :not([hidden]) ~ :not([hidden]){--tw-space-x-reverse:0;margin-right:calc(0.5rem * var(--tw-space-x-reverse));margin-left:calc(0.5rem * calc(1 - var(--tw-space-x-reverse)))}.lg\:px-8{padding-left:2rem;padding-right:2rem}}</style></head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-black">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#0b0f19]/80 border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-slate-950 font-black text-xl">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+                        NOVA'S LAB
+                    </span>
+                    <span class="block text-[10px] tracking-widest text-emerald-400/80 font-mono uppercase font-semibold">Arduino &amp; IoT Hub</span>
+                </div>
+            </div>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                <button onclick="switchView('home')" id="nav-home" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-house mr-2"></i>Home
+                </button>
+                <button onclick="switchView('projects')" id="nav-projects" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-microchip mr-2"></i>Projects
+                </button>
+                <button onclick="switchView('tutorials')" id="nav-tutorials" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-graduation-cap mr-2"></i>Tutorials
+                </button>
+                <button onclick="switchView('calculators')" id="nav-calculators" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-calculator mr-2"></i>Calculators
+                </button>
+                <button onclick="switchView('download')" id="nav-download" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20">
+                    <i class="fa-solid fa-download mr-2"></i>Download ZIP 📦
+                </button>
+            </nav>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="md:hidden flex items-center">
+                <button onclick="toggleMobileMenu()" class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white">
+                    <i id="mobile-menu-icon" class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 bg-[#0b0f19] border-b border-slate-800">
+            <button onclick="switchView('home'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-emerald-400 bg-emerald-500/10">
+                <i class="fa-solid fa-house mr-3"></i>Home
+            </button>
+            <button onclick="switchView('projects'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">
+                <i class="fa-solid fa-microchip mr-3"></i>Projects
+            </button>
+            <button onclick="switchView('tutorials'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">
+                <i class="fa-solid fa-graduation-cap mr-3"></i>Tutorials
+            </button>
+            <button onclick="switchView('calculators'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800">
+                <i class="fa-solid fa-calculator mr-3"></i>Calculators
+            </button>
+            <button onclick="switchView('download'); toggleMobileMenu();" class="w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-cyan-400 bg-cyan-500/10">
+                <i class="fa-solid fa-download mr-3"></i>Download ZIP 📦
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- ================= HOME VIEW ================= -->
+        <section id="view-home" class="space-y-16 animate-fadeIn hidden">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900/90 to-emerald-950/40 p-8 sm:p-12 border border-slate-800 shadow-2xl">
+                <div class="absolute -right-10 -bottom-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-10 -top-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="relative z-10 max-w-3xl space-y-6">
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono uppercase tracking-wider">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>Next-Gen Embedded Electronics Playground</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight">
+                        Build Smart IoT &amp; <span class="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Arduino Projects</span> with Ease
+                    </h1>
+                    
+                    <p class="text-slate-400 text-lg sm:text-xl font-normal leading-relaxed">
+                        Welcome to Nova's Arduino Lab — your ultimate destination for high-end Arduino sketches, interactive circuit calculators, expert tutorials, and ready-to-run source code.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <button onclick="switchView('projects')" class="px-7 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5 flex items-center space-x-2">
+                            <i class="fa-solid fa-rocket"></i>
+                            <span>Explore Projects</span>
+                        </button>
+                        <button onclick="switchView('download')" class="px-7 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold border border-cyan-500/30 transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-file-zipper"></i>
+                            <span>Download Website ZIP</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 glow-box text-center">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-emerald-400 font-mono">04+</div>
+                    <div class="text-xs sm:text-sm text-slate-400 mt-1 uppercase tracking-wider font-medium">Advanced Projects</div>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 glow-box text-center">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-cyan-400 font-mono">100%</div>
+                    <div class="text-xs sm:text-sm text-slate-400 mt-1 uppercase tracking-wider font-medium">Tested C++ Code</div>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 glow-box text-center">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-emerald-400 font-mono">02</div>
+                    <div class="text-xs sm:text-sm text-slate-400 mt-1 uppercase tracking-wider font-medium">Live Calculators</div>
+                </div>
+                <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 glow-box text-center">
+                    <div class="text-3xl sm:text-4xl font-extrabold text-cyan-400 font-mono">ZIP</div>
+                    <div class="text-xs sm:text-sm text-slate-400 mt-1 uppercase tracking-wider font-medium">Instant Export</div>
+                </div>
+            </div>
+
+            <!-- Featured Projects Preview -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold tracking-tight">Featured Projects</h2>
+                        <p class="text-sm text-slate-400">Click any project to view complete schematics and C++ code.</p>
+                    </div>
+                    <button onclick="switchView('projects')" class="text-sm text-emerald-400 hover:text-emerald-300 font-semibold flex items-center space-x-1">
+                        <span>View All</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="home-featured-grid">
+                    <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 glow-box flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">ESP32 NodeMCU</span>
+                                <span class="text-xs text-slate-400 font-mono">IoT &amp; WiFi</span>
+                            </div>
+                            <h3 class="text-xl font-bold tracking-tight">IoT Weather Station with ESP32</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">A robust IoT weather station that reads temperature, humidity, and barometric pressure using a BME280 sensor and publishes live telemetry to an MQTT broker over WiFi.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-emerald-400 font-mono font-semibold"><i class="fa-solid fa-code mr-1.5"></i>C++ Sketch Ready</span>
+                            <button onclick="openProjectModal('weather')" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all">View Code &amp; Specs →</button>
+                        </div>
+                    </div>
+                
+                    <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 glow-box flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold border bg-cyan-500/10 text-cyan-400 border-cyan-500/20">Arduino Uno / Nano</span>
+                                <span class="text-xs text-slate-400 font-mono">Robotics</span>
+                            </div>
+                            <h3 class="text-xl font-bold tracking-tight">Obstacle Avoiding Autonomous Robot</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">An autonomous wheeled robot equipped with an HC-SR04 ultrasonic distance sensor mounted on a SG90 servo motor that sweeps left and right to avoid obstacles intelligently.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-emerald-400 font-mono font-semibold"><i class="fa-solid fa-code mr-1.5"></i>C++ Sketch Ready</span>
+                            <button onclick="openProjectModal('robot')" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all">View Code &amp; Specs →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PROJECTS GALLERY VIEW ================= -->
+        <section id="view-projects" class="space-y-8 hidden animate-fadeIn">
+            <div class="border-b border-slate-800 pb-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl font-extrabold tracking-tight">Arduino Projects Gallery</h1>
+                        <p class="text-slate-400 mt-1">Explore production-ready Arduino &amp; ESP32 sketches with wiring instructions.</p>
+                    </div>
+                    <!-- Search bar -->
+                    <div class="relative w-full md:w-72">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                        <input type="text" id="project-search" oninput="filterProjects()" placeholder="Search projects or chips..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm focus:outline-none focus:border-emerald-500 text-slate-200">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-grid">
+                    <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 glow-box flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">ESP32 NodeMCU</span>
+                                <span class="text-xs text-slate-400 font-mono">IoT &amp; WiFi</span>
+                            </div>
+                            <h3 class="text-xl font-bold tracking-tight">IoT Weather Station with ESP32</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">A robust IoT weather station that reads temperature, humidity, and barometric pressure using a BME280 sensor and publishes live telemetry to an MQTT broker over WiFi.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-emerald-400 font-mono font-semibold"><i class="fa-solid fa-code mr-1.5"></i>C++ Sketch Ready</span>
+                            <button onclick="openProjectModal('weather')" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all">View Code &amp; Specs →</button>
+                        </div>
+                    </div>
+                
+                    <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 glow-box flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold border bg-cyan-500/10 text-cyan-400 border-cyan-500/20">Arduino Uno / Nano</span>
+                                <span class="text-xs text-slate-400 font-mono">Robotics</span>
+                            </div>
+                            <h3 class="text-xl font-bold tracking-tight">Obstacle Avoiding Autonomous Robot</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">An autonomous wheeled robot equipped with an HC-SR04 ultrasonic distance sensor mounted on a SG90 servo motor that sweeps left and right to avoid obstacles intelligently.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-emerald-400 font-mono font-semibold"><i class="fa-solid fa-code mr-1.5"></i>C++ Sketch Ready</span>
+                            <button onclick="openProjectModal('robot')" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all">View Code &amp; Specs →</button>
+                        </div>
+                    </div>
+                
+                    <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 glow-box flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">ESP8266 NodeMCU</span>
+                                <span class="text-xs text-slate-400 font-mono">Smart Home</span>
+                            </div>
+                            <h3 class="text-xl font-bold tracking-tight">Smart Home 4-Channel Relay Controller</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">Control home appliances remotely over local Wi-Fi via an embedded web server hosted directly on the ESP8266 module.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-emerald-400 font-mono font-semibold"><i class="fa-solid fa-code mr-1.5"></i>C++ Sketch Ready</span>
+                            <button onclick="openProjectModal('smarthome')" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all">View Code &amp; Specs →</button>
+                        </div>
+                    </div>
+                
+                    <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 glow-box flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold border bg-cyan-500/10 text-cyan-400 border-cyan-500/20">Arduino Uno &amp; HC-05</span>
+                                <span class="text-xs text-slate-400 font-mono">Bluetooth</span>
+                            </div>
+                            <h3 class="text-xl font-bold tracking-tight">OLED Bluetooth Controlled Rover</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">Receive serial commands from an Android smartphone via Bluetooth HC-05 module to drive a rover while displaying live status on an SSD1306 OLED screen.</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-emerald-400 font-mono font-semibold"><i class="fa-solid fa-code mr-1.5"></i>C++ Sketch Ready</span>
+                            <button onclick="openProjectModal('rover')" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all">View Code &amp; Specs →</button>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- ================= TUTORIALS VIEW ================= -->
+        <section id="view-tutorials" class="space-y-8 hidden animate-fadeIn">
+            <div class="border-b border-slate-800 pb-6">
+                <h1 class="text-3xl font-extrabold tracking-tight">Embedded Tutorials &amp; Guides</h1>
+                <p class="text-slate-400 mt-1">Master microcontroller programming, sensors, and communication protocols.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4 hover:border-emerald-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">1. Arduino IDE Setup &amp; Libraries</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Learn how to install board managers for ESP32 and ESP8266, configure baud rates, and import ZIP libraries.</p>
+                    <button onclick="openTutorialModal('setup')" class="text-sm text-emerald-400 font-semibold hover:underline">Read Guide →</button>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4 hover:border-emerald-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-wave-square"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">2. Understanding PWM &amp; Analog Pins</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Master Pulse Width Modulation to dim LEDs and control servo motor angles with precision.</p>
+                    <button onclick="openTutorialModal('pwm')" class="text-sm text-cyan-400 font-semibold hover:underline">Read Guide →</button>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4 hover:border-emerald-500/50 transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-network-wired"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">3. I2C Bus &amp; Sensor Interfacing</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Connect multiple sensors (OLED displays, BME280, RTC modules) using only SDA and SCL pins.</p>
+                    <button onclick="openTutorialModal('i2c')" class="text-sm text-emerald-400 font-semibold hover:underline">Read Guide →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CALCULATORS VIEW ================= -->
+        <section id="view-calculators" class="space-y-8 hidden animate-fadeIn">
+            <div class="border-b border-slate-800 pb-6">
+                <h1 class="text-3xl font-extrabold tracking-tight">Electronics Calculators</h1>
+                <p class="text-slate-400 mt-1">Essential engineering utilities for your electronics workbench.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- LED Resistor Calculator -->
+                <div class="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <h2 class="text-xl font-bold">LED Resistor Calculator</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Source Voltage (Vin - Volts)</label>
+                            <input type="number" id="calc-vin" value="5" step="0.1" oninput="calculateLED()" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">LED Forward Voltage (Vf - Volts)</label>
+                            <select id="calc-vf" onchange="updateCustomVf(); calculateLED();" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500">
+                                <option value="2.0">Red LED (2.0V)</option>
+                                <option value="2.1" selected="">Green / Yellow LED (2.1V)</option>
+                                <option value="3.2">Blue / White LED (3.2V)</option>
+                                <option value="1.8">Infrared LED (1.8V)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">LED Current (If - Milliamps)</label>
+                            <input type="number" id="calc-if" value="20" step="1" oninput="calculateLED()" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20 space-y-2">
+                        <div class="text-xs uppercase font-mono text-emerald-400 font-semibold tracking-wider">Calculated Result</div>
+                        <div class="text-3xl font-extrabold text-emerald-400 font-mono" id="resistor-result">145.0 Ω</div>
+                        <p class="text-xs text-slate-400" id="resistor-std">Recommended standard resistor: 150 Ω (nearest higher value)</p>
+                    </div>
+                </div>
+
+                <!-- Resistor Color Code Calculator -->
+                <div class="p-6 sm:p-8 rounded-3xl bg-slate-900 border border-slate-800 space-y-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-bars-staggered"></i>
+                        </div>
+                        <h2 class="text-xl font-bold">Resistor Color Code (4-Band)</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Band 1 (First Digit)</label>
+                            <select id="band1" onchange="calculateResistorColor()" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-cyan-500">
+                                <option value="0">Black (0)</option>
+                                <option value="1" selected="">Brown (1)</option>
+                                <option value="2">Red (2)</option>
+                                <option value="3">Orange (3)</option>
+                                <option value="4">Yellow (4)</option>
+                                <option value="5">Green (5)</option>
+                                <option value="6">Blue (6)</option>
+                                <option value="7">Violet (7)</option>
+                                <option value="8">Grey (8)</option>
+                                <option value="9">White (9)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Band 2 (Second Digit)</label>
+                            <select id="band2" onchange="calculateResistorColor()" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-cyan-500">
+                                <option value="0">Black (0)</option>
+                                <option value="1">Brown (1)</option>
+                                <option value="2">Red (2)</option>
+                                <option value="3">Orange (3)</option>
+                                <option value="4" selected="">Yellow (4)</option>
+                                <option value="5">Green (5)</option>
+                                <option value="6">Blue (6)</option>
+                                <option value="7">Violet (7)</option>
+                                <option value="8">Grey (8)</option>
+                                <option value="9">White (9)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-1">Band 3 (Multiplier)</label>
+                            <select id="band3" onchange="calculateResistorColor()" class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 focus:outline-none focus:border-cyan-500">
+                                <option value="1">Black (×1)</option>
+                                <option value="10">Brown (×10)</option>
+                                <option value="100" selected="">Red (×100)</option>
+                                <option value="1000">Orange (×1k)</option>
+                                <option value="10000">Yellow (×10k)</option>
+                                <option value="100000">Green (×100k)</option>
+                                <option value="1000000">Blue (×1M)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 space-y-2">
+                        <div class="text-xs uppercase font-mono text-cyan-400 font-semibold tracking-wider">Resistance Value</div>
+                        <div class="text-3xl font-extrabold text-cyan-400 font-mono" id="color-code-result">1.4 kΩ (1,400 Ω)</div>
+                        <p class="text-xs text-slate-400">Tolerance: ±5% (Gold)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= DOWNLOAD SOURCE VIEW ================= -->
+        <section id="view-download" class="space-y-8 animate-fadeIn max-w-4xl mx-auto">
+            <div class="border-b border-slate-800 pb-6 text-center">
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Download Website as ZIP 📦</h1>
+                <p class="text-slate-400 mt-2">Get the complete source code of this multi-page Arduino portal instantly to run locally or host on GitHub Pages/Netlify.</p>
+            </div>
+
+            <div class="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 glow-box space-y-8 text-center">
+                <div class="w-20 h-20 rounded-2xl bg-cyan-500/10 text-cyan-400 mx-auto flex items-center justify-center text-4xl shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-file-zipper animate-bounce"></i>
+                </div>
+
+                <div class="space-y-3">
+                    <h2 class="text-2xl font-bold">Nova's Arduino Lab v2.5.0</h2>
+                    <p class="text-slate-400 max-w-lg mx-auto text-sm leading-relaxed">
+                        This bundle includes the single-file architecture featuring responsive Tailwind CSS, embedded project sketches, C++ code copy utilities, and fully functional LED &amp; resistor calculators.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3 pt-2">
+                    <div class="px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 font-mono">
+                        <i class="fa-solid fa-check text-emerald-400 mr-2"></i>HTML5 / Tailwind CSS
+                    </div>
+                    <div class="px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 font-mono">
+                        <i class="fa-solid fa-check text-emerald-400 mr-2"></i>Vanilla JS &amp; JSZip
+                    </div>
+                    <div class="px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 font-mono">
+                        <i class="fa-solid fa-check text-emerald-400 mr-2"></i>100% Offline Ready
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button onclick="downloadWebsiteZip()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-extrabold text-lg shadow-xl shadow-cyan-500/25 transition-all transform hover:-scale-105 flex items-center justify-center space-x-3 mx-auto">
+                        <i class="fa-solid fa-download"></i>
+                        <span>Download Complete ZIP Package 📦</span>
+                    </button>
+                    <p class="text-xs text-slate-500 mt-3" id="download-status">Packaging website into ZIP archive...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= PROJECT DETAIL MODAL ================= -->
+    <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn hidden">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-4xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col shadow-2xl">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+                <div class="flex items-center space-x-3">
+                    <div id="modal-project-badge" class="px-3 py-1 rounded-full text-xs font-mono font-semibold border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">ESP32 NodeMCU</div>
+                    <h2 id="modal-project-title" class="text-xl font-bold">IoT Weather Station with ESP32</h2>
+                </div>
+                <button onclick="closeProjectModal()" class="w-9 h-9 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-all">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-grow">
+                <div>
+                    <h3 class="text-sm font-mono text-emerald-400 uppercase tracking-wider mb-2 font-semibold">Project Overview</h3>
+                    <p id="modal-project-desc" class="text-slate-300 text-sm leading-relaxed">A robust IoT weather station that reads temperature, humidity, and barometric pressure using a BME280 sensor and publishes live telemetry to an MQTT broker over WiFi.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-5 rounded-2xl bg-slate-950 border border-slate-800/80 space-y-3">
+                        <h4 class="text-xs font-mono text-cyan-400 uppercase tracking-wider font-semibold">Components Required</h4>
+                        <ul id="modal-project-components" class="space-y-2 text-sm text-slate-300"><li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i><span>1x ESP32 NodeMCU Board</span></li><li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i><span>1x BME280 Temperature/Pressure Sensor</span></li><li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i><span>1x 0.96" OLED Display (I2C)</span></li><li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i><span>Jumper Wires &amp; Breadboard</span></li></ul>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-950 border border-slate-800/80 space-y-3">
+                        <h4 class="text-xs font-mono text-emerald-400 uppercase tracking-wider font-semibold">Wiring / Pinout Guide</h4>
+                        <p id="modal-project-wiring" class="text-sm text-slate-300 leading-relaxed">BME280 VCC -&gt; 3.3V, GND -&gt; GND, SCL -&gt; GPIO 22, SDA -&gt; GPIO 21. OLED shares the same I2C bus (SCL=22, SDA=21).</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-xs font-mono text-cyan-400 uppercase tracking-wider font-semibold">Arduino C++ Sketch</h4>
+                        <button onclick="copyModalCode()" id="copy-code-btn" class="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition-all flex items-center space-x-1.5">
+                            <i class="fa-regular fa-copy"></i>
+                            <span id="copy-btn-text">Copy Code</span>
+                        </button>
+                    </div>
+                    <div class="code-block rounded-2xl p-4 overflow-x-auto max-h-80">
+                        <pre><code id="modal-project-code" class="text-xs font-mono text-emerald-300 leading-relaxed">#include &lt;WiFi.h&gt;<br>#include &lt;Wire.h&gt;<br>#include &lt;Adafruit_Sensor.h&gt;<br>#include &lt;Adafruit_BME280.h&gt;<br><br>const char* ssid = "YOUR_WIFI_SSID";<br>const char* password = "YOUR_WIFI_PASSWORD";<br><br>Adafruit_BME280 bme; // I2C<br><br>void setup() {<br>  Serial.begin(115200);<br>  WiFi.begin(ssid, password);<br>  while (WiFi.status() != WL_CONNECTED) {<br>    delay(500);<br>    Serial.print(".");<br>  }<br>  Serial.println("\nWiFi connected!");<br>  <br>  if (!bme.begin(0x76)) {<br>    Serial.println("Could not find a valid BME280 sensor!");<br>    while (1);<br>  }<br>}<br><br>void loop() {<br>  float temp = bme.readTemperature();<br>  float humidity = bme.readHumidity();<br>  float pressure = bme.readPressure() / 100.0F;<br><br>  Serial.printf("Temp: %.2f C | Humidity: %.2f %% | Pressure: %.2f hPa\n", temp, humidity, pressure);<br>  delay(5000);<br>}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-slate-800 bg-slate-950/60 flex justify-end">
+                <button onclick="closeProjectModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold transition-all">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TUTORIAL MODAL ================= -->
+    <div id="tutorial-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden animate-fadeIn">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col shadow-2xl">
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+                <h2 id="tutorial-modal-title" class="text-xl font-bold">Tutorial Guide</h2>
+                <button onclick="closeTutorialModal()" class="w-9 h-9 rounded-xl bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="tutorial-modal-content" class="p-6 overflow-y-auto space-y-4 text-slate-300 text-sm leading-relaxed">
+                <!-- Content loaded dynamically -->
+            </div>
+            <div class="px-6 py-4 border-t border-slate-800 bg-slate-950/60 flex justify-end">
+                <button onclick="closeTutorialModal()" class="px-5 py-2 rounded-xl bg-slate-800 text-slate-200 text-sm font-semibold">Got it</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/40 mt-auto py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                <span class="text-sm font-semibold tracking-wide">Nova's Arduino Lab ⚡🤖</span>
+            </div>
+            <p class="text-xs text-slate-500 font-mono">Built with passion for makers, students, and IoT engineers worldwide.</p>
+            <div class="flex items-center space-x-4 text-slate-400">
+                <button onclick="switchView('download')" class="text-xs text-cyan-400 hover:underline">Download ZIP</button>
+                <span>•</span>
+                <button onclick="switchView('calculators')" class="text-xs text-emerald-400 hover:underline">Calculators</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 px-5 py-3 rounded-2xl bg-emerald-500 text-slate-950 font-bold shadow-2xl flex items-center space-x-2">
+        <i class="fa-solid fa-circle-check text-lg"></i>
+        <span id="toast-msg">Action completed successfully!</span>
+    </div>
+
+    <script>
+        // Project Database
+        const projectsData = [
+            {
+                id: 'weather',
+                title: 'IoT Weather Station with ESP32',
+                chip: 'ESP32 NodeMCU',
+                category: 'IoT & WiFi',
+                badgeBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                desc: 'A robust IoT weather station that reads temperature, humidity, and barometric pressure using a BME280 sensor and publishes live telemetry to an MQTT broker over WiFi.',
+                components: ['1x ESP32 NodeMCU Board', '1x BME280 Temperature/Pressure Sensor', '1x 0.96" OLED Display (I2C)', 'Jumper Wires & Breadboard'],
+                wiring: 'BME280 VCC -> 3.3V, GND -> GND, SCL -> GPIO 22, SDA -> GPIO 21. OLED shares the same I2C bus (SCL=22, SDA=21).',
+                code: `#include <WiFi.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
+
+Adafruit_BME280 bme; // I2C
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\\nWiFi connected!");
+  
+  if (!bme.begin(0x76)) {
+    Serial.println("Could not find a valid BME280 sensor!");
+    while (1);
+  }
+}
+
+void loop() {
+  float temp = bme.readTemperature();
+  float humidity = bme.readHumidity();
+  float pressure = bme.readPressure() / 100.0F;
+
+  Serial.printf("Temp: %.2f C | Humidity: %.2f %% | Pressure: %.2f hPa\\n", temp, humidity, pressure);
+  delay(5000);
+}`
+            },
+            {
+                id: 'robot',
+                title: 'Obstacle Avoiding Autonomous Robot',
+                chip: 'Arduino Uno / Nano',
+                category: 'Robotics',
+                badgeBg: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+                desc: 'An autonomous wheeled robot equipped with an HC-SR04 ultrasonic distance sensor mounted on a SG90 servo motor that sweeps left and right to avoid obstacles intelligently.',
+                components: ['1x Arduino Uno', '1x L298N Motor Driver Module', '1x Ultrasonic Sensor HC-SR04', '1x SG90 Servo Motor', '2x DC Gear Motors with Chassis', '2x 18650 Batteries'],
+                wiring: 'TRIG -> Pin 9, ECHO -> Pin 10, Servo -> Pin 11. Motor driver IN1-IN4 connected to pins 4, 5, 6, 7. ENA/ENB connected to PWM pins 3 and 5.',
+                code: `#include <Servo.h>
+
+const int trigPin = 9;
+const int echoPin = 10;
+Servo scanServo;
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  scanServo.attach(11);
+  Serial.begin(9600);
+}
+
+void loop() {
+  long duration, distance;
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+  
+  if (distance < 25) {
+    Serial.println("Obstacle detected! Reversing & turning...");
+    // Add motor reverse/turn logic here
+  } else {
+    Serial.println("Path clear. Moving forward.");
+  }
+  delay(100);
+}`
+            },
+            {
+                id: 'smarthome',
+                title: 'Smart Home 4-Channel Relay Controller',
+                chip: 'ESP8266 NodeMCU',
+                category: 'Smart Home',
+                badgeBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                desc: 'Control home appliances remotely over local Wi-Fi via an embedded web server hosted directly on the ESP8266 module.',
+                components: ['1x ESP8266 NodeMCU', '1x 4-Channel 5V Relay Module', 'Jumper wires & 5V Power Supply'],
+                wiring: 'Relay IN1 -> D1 (GPIO 5), IN2 -> D2 (GPIO 4), IN3 -> D5 (GPIO 14), IN4 -> D6 (GPIO 12). VCC -> 5V, GND -> GND.',
+                code: `#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+
+const char* ssid = "Home_Network";
+const char* password = "secret_password";
+
+ESP8266WebServer server(80);
+const int relayPin = 5; // D1
+
+void handleRoot() {
+  server.send(200, "text/html", "<h1>Smart Home Relay</h1><p><a href='/on'><button>TURN ON</button></a> <a href='/off'><button>TURN OFF</button></a></p>");
+}
+
+void setup() {
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, LOW);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) { delay(500); }
+  
+  server.on("/", handleRoot);
+  server.on("/on", []() { digitalWrite(relayPin, HIGH); server.send(200, "text/plain", "Relay ON"); });
+  server.on("/off", []() { digitalWrite(relayPin, LOW); server.send(200, "text/plain", "Relay OFF"); });
+  server.begin();
+}
+
+void loop() {
+  server.handleClient();
+}`
+            },
+            {
+                id: 'rover',
+                title: 'OLED Bluetooth Controlled Rover',
+                chip: 'Arduino Uno & HC-05',
+                category: 'Bluetooth',
+                badgeBg: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+                desc: 'Receive serial commands from an Android smartphone via Bluetooth HC-05 module to drive a rover while displaying live status on an SSD1306 OLED screen.',
+                components: ['1x Arduino Uno', '1x HC-05 Bluetooth Module', '1x SSD1306 128x64 OLED Display', '1x L298N Motor Driver'],
+                wiring: 'HC-05 TX -> Arduino RX (Pin 0), RX -> TX (Pin 1). OLED SDA -> A4, SCL -> A5.',
+                code: `#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+void setup() {
+  Serial.begin(9600);
+  if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+    for(;;);
+  }
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Bluetooth Rover Ready");
+  display.display();
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    char command = Serial.read();
+    display.clearDisplay();
+    display.setCursor(0,10);
+    display.print("Command: ");
+    display.print(command);
+    display.display();
+  }
+}`
+            }
+        ];
+
+        // View Switching Logic
+        function switchView(viewName) {
+            const views = ['home', 'projects', 'tutorials', 'calculators', 'download'];
+            views.forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`nav-${v}`);
+                if (btn) {
+                    btn.className = "nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-300 hover:text-white hover:bg-slate-800/60";
+                }
+            });
+
+            const activeView = document.getElementById(`view-${viewName}`);
+            if (activeView) activeView.classList.remove('hidden');
+
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            if (activeBtn) {
+                if (viewName === 'download') {
+                    activeBtn.className = "nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 hover:bg-cyan-500/20";
+                } else {
+                    activeBtn.className = "nav-btn px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20";
+                }
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                icon.className = "fa-solid fa-bars text-lg";
+            } else {
+                icon.className = "fa-solid fa-xmark text-lg";
+            }
+        }
+
+        // Render Projects Lists
+        function renderProjects() {
+            const grid = document.getElementById('projects-grid');
+            const homeGrid = document.getElementById('home-featured-grid');
+            
+            if (!grid) return;
+
+            let html = '';
+            let homeHtml = '';
+
+            projectsData.forEach((p, index) => {
+                const card = `
+                    <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 glow-box flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold border ${p.badgeBg}">${p.chip}</span>
+                                <span class="text-xs text-slate-400 font-mono">${p.category}</span>
+                            </div>
+                            <h3 class="text-xl font-bold tracking-tight">${p.title}</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed">${p.desc}</p>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-emerald-400 font-mono font-semibold"><i class="fa-solid fa-code mr-1.5"></i>C++ Sketch Ready</span>
+                            <button onclick="openProjectModal('${p.id}')" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all">View Code & Specs →</button>
+                        </div>
+                    </div>
+                `;
+                html += card;
+                if (index < 2) homeHtml += card;
+            });
+
+            grid.innerHTML = html;
+            if (homeGrid) homeGrid.innerHTML = homeHtml;
+        }
+
+        function filterProjects() {
+            const query = document.getElementById('project-search').value.toLowerCase();
+            const grid = document.getElementById('projects-grid');
+            const filtered = projectsData.filter(p => p.title.toLowerCase().includes(query) || p.chip.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            
+            let html = '';
+            if (filtered.length === 0) {
+                html = `<div class="col-span-2 text-center py-12 text-slate-500">No projects matching your search.</div>`;
+            } else {
+                filtered.forEach(p => {
+                    html += `
+                        <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800 glow-box flex flex-col justify-between space-y-4">
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="px-3 py-1 rounded-full text-xs font-mono font-semibold border ${p.badgeBg}">${p.chip}</span>
+                                    <span class="text-xs text-slate-400 font-mono">${p.category}</span>
+                                </div>
+                                <h3 class="text-xl font-bold tracking-tight">${p.title}</h3>
+                                <p class="text-slate-400 text-sm leading-relaxed">${p.desc}</p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                                <span class="text-xs text-emerald-400 font-mono font-semibold"><i class="fa-solid fa-code mr-1.5"></i>C++ Sketch Ready</span>
+                                <button onclick="openProjectModal('${p.id}')" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 text-xs font-bold transition-all">View Code & Specs →</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            grid.innerHTML = html;
+        }
+
+        // Modal Handlers
+        let currentProject = null;
+        function openProjectModal(id) {
+            currentProject = projectsData.find(p => p.id === id);
+            if (!currentProject) return;
+
+            document.getElementById('modal-project-badge').innerText = currentProject.chip;
+            document.getElementById('modal-project-badge').className = `px-3 py-1 rounded-full text-xs font-mono font-semibold border ${currentProject.badgeBg}`;
+            document.getElementById('modal-project-title').innerText = currentProject.title;
+            document.getElementById('modal-project-desc').innerText = currentProject.desc;
+            document.getElementById('modal-project-wiring').innerText = currentProject.wiring;
+            document.getElementById('modal-project-code').innerText = currentProject.code;
+
+            const compList = document.getElementById('modal-project-components');
+            let compHtml = '';
+            currentProject.components.forEach(c => {
+                compHtml += `<li class="flex items-center space-x-2"><i class="fa-solid fa-check text-emerald-400 text-xs"></i><span>${c}</span></li>`;
+            });
+            compList.innerHTML = compHtml;
+
+            document.getElementById('project-modal').classList.remove('hidden');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+        }
+
+        function copyModalCode() {
+            if (!currentProject) return;
+            const textarea = document.createElement('textarea');
+            textarea.value = currentProject.code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const btnText = document.getElementById('copy-btn-text');
+            btnText.innerText = 'Copied!';
+            showToast('Arduino C++ sketch copied to clipboard!');
+            setTimeout(() => { btnText.innerText = 'Copy Code'; }, 2000);
+        }
+
+        // Tutorial Modals
+        const tutorialsContent = {
+            setup: {
+                title: 'Arduino IDE Setup & ESP32 Board Manager',
+                content: `<p>To program ESP32 or ESP8266 boards in the Arduino IDE, you need to add their official board URLs.</p><ol class="list-decimal pl-5 space-y-2 mt-3"><li>Open Arduino IDE -> File -> Preferences.</li><li>Paste the ESP32 JSON URL in <strong>Additional Boards Manager URLs</strong>.</li><li>Go to Tools -> Board -> Boards Manager, search for <strong>ESP32</strong> by Espressif Systems, and click Install.</li><li>Select your ESP32 Development Board and correct COM port before uploading.</li></ol>`
+            },
+            pwm: {
+                title: 'Understanding PWM (Pulse Width Modulation)',
+                content: `<p>Microcontrollers output digital signals (HIGH = 5V or 3.3V, LOW = 0V). To simulate analog voltage levels (like dimming an LED or controlling servo speeds), we rapidly toggle digital pins on and off.</p><p class="mt-3">Use <code>analogWrite(pin, value)</code> where value ranges from 0 (0% duty cycle) to 255 (100% duty cycle).</p>`
+            },
+            i2c: {
+                title: 'I2C Communication Protocol',
+                content: `<p>I2C (Inter-Integrated Circuit) uses only two wires for communication between master and slave devices:</p><ul class="list-disc pl-5 space-y-2 mt-3"><li><strong>SDA (Serial Data Line)</strong></li><li><strong>SCL (Serial Clock Line)</strong></li></ul><p class="mt-3">Each I2C device has a unique HEX address (e.g., 0x3C for SSD1306 OLED, 0x76 for BME280). You can connect dozens of sensors on the same two pins!</p>`
+            }
+        };
+
+        function openTutorialModal(type) {
+            const tut = tutorialsContent[type];
+            if (!tut) return;
+            document.getElementById('tutorial-modal-title').innerText = tut.title;
+            document.getElementById('tutorial-modal-content').innerHTML = tut.content;
+            document.getElementById('tutorial-modal').classList.remove('hidden');
+        }
+
+        function closeTutorialModal() {
+            document.getElementById('tutorial-modal').classList.add('hidden');
+        }
+
+        // LED Resistor Calculator Logic
+        function calculateLED() {
+            const vin = parseFloat(document.getElementById('calc-vin').value) || 0;
+            const vf = parseFloat(document.getElementById('calc-vf').value) || 0;
+            const if_mA = parseFloat(document.getElementById('calc-if').value) || 0;
+
+            if (if_mA <= 0 || vin <= vf) {
+                document.getElementById('resistor-result').innerText = 'Invalid Input';
+                document.getElementById('resistor-std').innerText = 'Vin must be greater than Vf.';
+                return;
+            }
+
+            const if_A = if_mA / 1000.0;
+            const resistance = (vin - vf) / if_A;
+            
+            // Standard resistor values list
+            const standardValues = [100, 120, 150, 180, 220, 270, 330, 390, 470, 560, 680, 820, 1000, 1200, 1500, 1800, 2200];
+            let stdRes = standardValues.find(v => v >= resistance) || Math.ceil(resistance / 100) * 100;
+
+            document.getElementById('resistor-result').innerText = `${resistance.toFixed(1)} Ω`;
+            document.getElementById('resistor-std').innerText = `Recommended standard resistor: ${stdRes} Ω (nearest higher value)`;
+        }
+
+        // Resistor Color Code Calculator Logic
+        function calculateResistorColor() {
+            const b1 = parseInt(document.getElementById('band1').value);
+            const b2 = parseInt(document.getElementById('band2').value);
+            const b3 = parseInt(document.getElementById('band3').value);
+
+            const ohms = (b1 * 10 + b2) * b3;
+            let displayVal = '';
+            if (ohms >= 1000000) {
+                displayVal = `${(ohms / 1000000).toFixed(1)} MΩ (${ohms.toLocaleString()} Ω)`;
+            } else if (ohms >= 1000) {
+                displayVal = `${(ohms / 1000).toFixed(1)} kΩ (${ohms.toLocaleString()} Ω)`;
+            } else {
+                displayVal = `${ohms} Ω`;
+            }
+
+            document.getElementById('color-code-result').innerText = displayVal;
+        }
+
+        // Toast Notification helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Download Website as ZIP using JSZip
+        async function downloadWebsiteZip() {
+            const statusEl = document.getElementById('download-status');
+            statusEl.innerText = 'Packaging website into ZIP archive...';
+
+            try {
+                const zip = new JSZip();
+                
+                // Get current HTML document content
+                const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+                zip.file("index.html", htmlContent);
+
+                // Add a README.md file
+                const readmeContent = `# Nova's Arduino Lab ⚡🤖\n\nThank you for downloading Nova's Arduino Lab source code!\n\n## Instructions:\n1. Extract the ZIP file.\n2. Open 'index.html' in any modern web browser.\n3. Explore Arduino C++ sketches, wiring guides, and interactive electronic calculators offline!\n`;
+                zip.file("README.md", readmeContent);
+
+                // Generate ZIP blob
+                const content = await zip.generateAsync({ type: "blob" });
+                
+                // Trigger download
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = "novas-arduino-lab.zip";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                statusEl.innerText = 'ZIP download successfully initiated! 📦';
+                showToast('Website downloaded as ZIP successfully!');
+            } catch (err) {
+                console.error(err);
+                statusEl.innerText = 'Error generating ZIP package.';
+                showToast('Failed to generate ZIP.');
+            }
+        }
+
+        // Initialize on window load
+        window.onload = function() {
+            renderProjects();
+            calculateLED();
+            calculateResistorColor();
+        };
+    </script>
+
+</body></html>
